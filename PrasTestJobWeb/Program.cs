@@ -1,4 +1,6 @@
+using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
+using PrasTestJobData;
 
 namespace PrasTestJobWeb
 {
@@ -9,8 +11,13 @@ namespace PrasTestJobWeb
             var builder = WebApplication.CreateBuilder(args);
 
             builder.Services.AddControllersWithViews();
+            builder.Services.AddDbContext<PrasTestJobContext>(opt =>
+            {
+                opt.UseSqlite(builder.Configuration.GetConnectionString("Alternative"));
+            });
 
             var app = builder.Build();
+
 
             if (!app.Environment.IsDevelopment())
             {
