@@ -11,9 +11,4 @@
     <ProjectReference Include="..\PrasTestJobDTO\PrasTestJobDTO.csproj" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Abstract\" />
-    <Folder Include="Implementations\" />
-  </ItemGroup>
-
 </Project>
