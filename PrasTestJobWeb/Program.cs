@@ -1,6 +1,9 @@
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.FileProviders;
 using PrasTestJobData;
+using PrasTestJobServices.Abstract;
+using PrasTestJobServices.Implementations;
 
 namespace PrasTestJobWeb
 {
@@ -16,10 +19,29 @@ namespace PrasTestJobWeb
                 opt.UseSqlite(builder.Configuration.GetConnectionString("Alternative"));
             });
 
+            builder.Services.AddEndpointsApiExplorer();
+            //builder.Services.AddSwaggerGen();
+
+            builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationScheme)
+                .AddCookie(CookieAuthenticationDefaults.AuthenticationScheme, options =>
+                {
+                    options.LoginPath = "/admin/Authentication/Login";
+                    options.AccessDeniedPath = "/admin/Authentication/AccessDenied";
+                    options.LogoutPath = "/admin/Authentication/Logout";
+                });
+
+            builder.Services.AddScoped<IUserServices, UserServices>();
+            builder.Services.AddScoped<INewsServices, NewsServices>();
+            builder.Services.AddSingleton<IPasswordHashing, PBKDF2PasswordHashing>();
+
             var app = builder.Build();
 
-
-            if (!app.Environment.IsDevelopment())
+            if (app.Environment.IsDevelopment())
+            {
+                //app.UseSwagger();
+                //app.UseSwaggerUI();
+            }
+            else
             {
                 app.UseExceptionHandler("/Home/Error");
                 app.UseHsts();
@@ -27,7 +49,8 @@ namespace PrasTestJobWeb
 
 
             app.UseHttpsRedirection();
-            app.UseStaticFiles( new StaticFileOptions
+
+            app.UseStaticFiles(new StaticFileOptions
             {
                 FileProvider = new PhysicalFileProvider(
                     Path.Combine(app.Environment.WebRootPath, "browser")),
@@ -40,13 +63,14 @@ namespace PrasTestJobWeb
             app.UseAuthentication();
             app.UseAuthorization();
 
-            app.MapControllerRoute(
-                name: "admin",
-                pattern: "admin/{controller=Home}/{action=Index}/{id?}");
-
             app.MapControllers();
 
-            app.MapFallbackToFile("browser/index.html");
+            app.MapControllerRoute(
+                name: "admin",
+                pattern: "admin/{controller=AdminPanel}/{action=Index}/{id?}");
+
+
+            app.MapFallbackToFile(/*"/app/{*path}",*/ "browser/index.html");
 
             app.Run();
         }
