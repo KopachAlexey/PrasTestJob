@@ -22,16 +22,20 @@ namespace PrasTestJobWeb.Controllers
         }
 
         [HttpGet]
-        public IActionResult Login(string? returnUrl = null, bool? loginResult = null)
+        public IActionResult Login(string? returnUrl = null, bool? IsLoginSucces = null)
         {
-            ViewBag.ReturnUrl = returnUrl ?? _mainPageUrl;
-            ViewBag.LoginResult = loginResult;
-            return View();
+            var userLoginModel = new UserLoginModel
+            {
+                ReturnUrl = returnUrl ?? _mainPageUrl,
+                IsLoginSucces = IsLoginSucces
+            };
+            return View(userLoginModel);
         }
 
         [HttpPost]
         public async Task<IActionResult> LoginProcessing([FromForm] UserLoginModel loginModel)
         {
+            //return RedirectToAction(nameof(AdminPanelController.Index), "AdminPanel");
             UserDto? user;
             try
             {
@@ -42,7 +46,7 @@ namespace PrasTestJobWeb.Controllers
                 throw;
             }
             if (user is null || !_passwordHashing.VerifyPassword(loginModel.Password, user.PasswordHas))
-                return RedirectToAction(nameof(Login), new { loginModel.Login, LoginResult = false});
+                return RedirectToAction(nameof(Login), new { loginModel.ReturnUrl, IsLoginSucces = false });
             var claims = new List<Claim>
             {
                 new Claim(ClaimTypes.Name, user.Login),
@@ -50,8 +54,8 @@ namespace PrasTestJobWeb.Controllers
             };
             var authProperties = new AuthenticationProperties
             {
-                IsPersistent = false,
-                ExpiresUtc = DateTime.UtcNow.AddMonths(1)
+                IsPersistent = true,
+                ExpiresUtc = DateTime.UtcNow.AddDays(1)
             };
             var identity = new ClaimsIdentity(claims, CookieAuthenticationDefaults.AuthenticationScheme);
             var principal = new ClaimsPrincipal(identity);
@@ -62,7 +66,7 @@ namespace PrasTestJobWeb.Controllers
                 return Redirect(_mainPageUrl);
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
