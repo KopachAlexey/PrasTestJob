@@ -1,10 +1,12 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 using PrasTestJobDTO;
 using PrasTestJobServices.Abstract;
 using PrasTestJobWeb.Models;
 
 namespace PrasTestJobWeb.Controllers
 {
+    [Authorize(Roles = "Admin")]
     public class AdminPanelController : Controller
     {
         readonly IUserServices _userServices;
@@ -18,7 +20,7 @@ namespace PrasTestJobWeb.Controllers
             _newsServices = newsServices;
         }
 
-        public IActionResult AdminPanel()
+        public IActionResult Index()
         {
             return View();
         }
@@ -36,6 +38,7 @@ namespace PrasTestJobWeb.Controllers
                     PasswordHas = _passwordHashing.HashPassword(newUser.Password),
                     RoleName = newUser.RoleName
                 };
+                var newUserId = await _userServices.CreateUserAsync(createUserDto);
             }
             catch (Exception)
             {
