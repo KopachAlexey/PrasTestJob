@@ -1,0 +1,40 @@
+﻿@model UserLoginModel
+@{
+    ViewData["Title"] = "Авторизация";
+}
+<div class="login-div">
+    <h3 class="form-data-h">Авторизация</h3>
+    <form class="login-form" asp-controller="Authentication" asp-action="LoginProcessing" method="post">
+        <input type="hidden" value=@Model.ReturnUrl name="returnUrl" />
+        <div>
+            <label asp-for=@Model.Login>Логин</label>
+            <input  asp-for=@Model.Login type="text" required='required' maxlength="40" />
+        </div>
+        <div>
+            <label asp-for=@Model.Password>Пароль</label>
+            <input asp-for=@Model.Password type="password"  required='required' maxlength="30" />
+            @* <div class="eye-btn-div">
+                <button type="button" id="eyeButton" class="btn btn-outlien-secondary eye-btn">
+                    <i class="fa fa-eye"></i>
+                </button>
+            </div> *@
+        </div>
+        <div class="login-buttons">
+            <input  class="login-button" type="submit" value="Вход" />
+            @* <input id="closeLoginBtn" class="return-button" type="button" value="Назад" onclick="window.location.href='@previousUrl'" data-link-btn /> *@
+        </div>
+    </form>
+    <div>
+        @if (Model.IsLoginSucces.HasValue)
+        {
+            @if (Model.IsLoginSucces == true)
+            {
+                <span>Success</span>
+            }
+            else
+            {
+                <span>Failed</span>
+            }
+        }
+    </div>
+</div>

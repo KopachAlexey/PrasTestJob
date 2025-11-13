@@ -13,8 +13,6 @@
 
   <ItemGroup>
     <Folder Include="Angular\" />
-    <Folder Include="Views\AdminPanel\" />
-    <Folder Include="Views\Authentication\" />
   </ItemGroup>
 
   <ItemGroup>
