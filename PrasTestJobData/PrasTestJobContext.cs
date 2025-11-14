@@ -18,6 +18,12 @@ namespace PrasTestJobData
             modelBuilder.ApplyConfiguration(new UserConfiguration());
             modelBuilder.ApplyConfiguration(new RoleConfiguration());
             modelBuilder.ApplyConfiguration(new NewsConfiguration());
+
+            modelBuilder.Entity<Role>().HasData(
+                new Role { Id = 1, Name = "User"},
+                new Role { Id = 2, Name = "Admin"}
+            );
         }
+
     }
 }
