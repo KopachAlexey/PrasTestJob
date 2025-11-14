@@ -6,5 +6,6 @@ namespace PrasTestJobServices.Abstract
     {
         Task<Guid> CreateUserAsync(CreateUserDto newUser);
         Task<UserDto?> GetUserByLoginAsync(string login);
+        Task<int> GetUserCountAsync();
     }
 }

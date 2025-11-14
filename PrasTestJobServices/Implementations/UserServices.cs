@@ -42,5 +42,10 @@ namespace PrasTestJobServices.Implementations
                 RoleName = user.Role.Name
             };
         }
+
+        public async Task<int> GetUserCountAsync()
+        {
+            return await _dbContext.Users.CountAsync();
+        }
     }
 }

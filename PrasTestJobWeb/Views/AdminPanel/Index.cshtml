@@ -1,3 +1,52 @@
-﻿@{
+﻿@model AdminPanelModel
+@{
+	ViewData["Title"] = "AdminPanel";
 }
-<div class="qwerty">Панель админа</div>
+<div class='admin-panel-div'>
+	<h3 class="form-data-h">Admin Panel</h3>
+	<div class='add-user-div'>
+		<form class="add-user-form" asp-controller='AdminPanel' asp-action='AddUserProcessing' method='post'>
+			<div>
+				<label asp-for=@Model.NewUserModel.Login>Логин</label>
+				<input asp-for=@Model.NewUserModel.Login type='text' required='required' maxlength="40" />
+			</div>
+			<div>
+				<label asp-for=@Model.NewUserModel.Password>Пароль</label>
+				<input asp-for=@Model.NewUserModel.Password  type='password' required='required' maxlength="30" />
+			</div>
+			<div class="add-user-role-select">
+				<label asp-for=@Model.NewUserModel.RoleName>Права:</label>
+				<select asp-for=@Model.NewUserModel.RoleName>
+					<option value='User'>User</option>
+					<option value='Admin'>Admin</option>
+				</select>
+			</div>
+			<div class="add-user-buttons">
+				<input class="add-user-button" type='submit' value='Добавить' />
+				@* <input class="return-home-button" type='button' onclick="window.location.href='@Url.Action("Index","Home")'" data-link-btn value='На главную' /> *@
+			</div>
+		</form>
+		<div>
+			@if (Model.IsUserAddedSucces.HasValue)
+			{
+				@if (Model.IsUserAddedSucces == true)
+				{
+					<span>Success</span>
+				}
+				else
+				{
+					<span>Failed</span>
+				}
+			}
+		</div>
+	</div>
+	<div>
+		<span>User count: @Model.UsersCount</span>
+		<span>News count: @Model.NewsCount</span>
+		<form asp-controller="Authentication" asp-action="Logout" method="post">
+			<input  type='submit' value='Log out' />
+		</form>
+		<button onclick="window.location.href='/'">Return</button>
+	</div>
+</div>
+

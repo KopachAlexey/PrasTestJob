@@ -1,9 +1,9 @@
 ﻿@model UserLoginModel
 @{
-    ViewData["Title"] = "Авторизация";
+    ViewData["Title"] = "Authentication";
 }
 <div class="login-div">
-    <h3 class="form-data-h">Авторизация</h3>
+    <h3 class="form-data-h">Sign in</h3>
     <form class="login-form" asp-controller="Authentication" asp-action="LoginProcessing" method="post">
         <input type="hidden" value=@Model.ReturnUrl name="returnUrl" />
         <div>
@@ -13,11 +13,6 @@
         <div>
             <label asp-for=@Model.Password>Пароль</label>
             <input asp-for=@Model.Password type="password"  required='required' maxlength="30" />
-            @* <div class="eye-btn-div">
-                <button type="button" id="eyeButton" class="btn btn-outlien-secondary eye-btn">
-                    <i class="fa fa-eye"></i>
-                </button>
-            </div> *@
         </div>
         <div class="login-buttons">
             <input  class="login-button" type="submit" value="Вход" />
