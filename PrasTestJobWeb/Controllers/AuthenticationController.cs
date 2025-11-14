@@ -10,7 +10,7 @@ namespace PrasTestJobWeb.Controllers
 {
     public class AuthenticationController : Controller
     {
-        const string _mainPageUrl = "/";
+        const string _mainPageUrl = "";
 
         readonly IUserServices _userServices;
         readonly IPasswordHashing _passwordHashing;
@@ -63,14 +63,14 @@ namespace PrasTestJobWeb.Controllers
             if (!String.IsNullOrEmpty(loginModel.ReturnUrl) && Url.IsLocalUrl(loginModel.ReturnUrl))
                 return LocalRedirect(loginModel.ReturnUrl);
             else
-                return LocalRedirect(_mainPageUrl);
+                return Redirect(_mainPageUrl);
         }
 
-        [HttpPost]
+        [HttpGet]
         public async Task<IActionResult> Logout()
         {
             await HttpContext.SignOutAsync(CookieAuthenticationDefaults.AuthenticationScheme);
-            return LocalRedirect(_mainPageUrl);
+            return Redirect(_mainPageUrl);
         }
 
         [HttpGet]

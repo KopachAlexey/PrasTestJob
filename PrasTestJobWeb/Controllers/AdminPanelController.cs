@@ -20,48 +20,32 @@ namespace PrasTestJobWeb.Controllers
             _newsServices = newsServices;
         }
 
-        public async Task<IActionResult> Index(bool? isUserAddedSucces)
+        public IActionResult Index()
         {
-            try
-            {
-                var newsCount = await _newsServices.GetNewsCountAsync(); 
-                var userCount = await _userServices.GetUserCountAsync();
-                var adminPanelModel = new AdminPanelModel
-                {
-                    NewUserModel = new NewUserModel(),
-                    NewsCount = newsCount,
-                    UsersCount = userCount,
-                    IsUserAddedSucces = isUserAddedSucces
-                };
-                return View(adminPanelModel);
-            }
-            catch (Exception)
-            {
-                throw;
-            }
-            
+            return View();
         }
 
-        public async Task<IActionResult> AddUserProcessing([FromForm] NewUserModel newUserModel)
+        public async Task<IActionResult> AddUserProcessing([FromForm] NewUserModel newUser)
         {
             try
             {
-                var user = await _userServices.GetUserByLoginAsync(newUserModel.Login);
+                var user = await _userServices.GetUserByLoginAsync(newUser.Login);
                 if (user is not null)
-                    return RedirectToAction(nameof(Index), new { isUserAddedSucces = false});
+                    return RedirectToAction(nameof(Index));
                 var createUserDto = new CreateUserDto
                 {
-                    Login = newUserModel.Login,
-                    PasswordHas = _passwordHashing.HashPassword(newUserModel.Password),
-                    RoleName = newUserModel.RoleName
+                    Login = newUser.Login,
+                    PasswordHas = _passwordHashing.HashPassword(newUser.Password),
+                    RoleName = newUser.RoleName
                 };
                 var newUserId = await _userServices.CreateUserAsync(createUserDto);
-                return RedirectToAction(nameof(Index), new { isUserAddedSucces = true });
             }
             catch (Exception)
             {
+
                 throw;
             }
+            return RedirectToAction(nameof(Index));
         }
     }
 }

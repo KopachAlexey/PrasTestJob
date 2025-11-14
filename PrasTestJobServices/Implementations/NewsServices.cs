@@ -1,71 +1,23 @@
-﻿using Microsoft.EntityFrameworkCore;
-using PrasTestJobData;
-using PrasTestJobData.Entities;
-using PrasTestJobDTO;
+﻿using PrasTestJobDTO;
 using PrasTestJobServices.Abstract;
 
 namespace PrasTestJobServices.Implementations
 {
     public class NewsServices : INewsServices
     {
-        readonly PrasTestJobContext _dbContext;
-
-        public NewsServices(PrasTestJobContext dbContext)
+        public Task<Guid> CreateNewsAsync(CreateNewsDto newNews)
         {
-            _dbContext = dbContext;
+            throw new NotImplementedException();
         }
 
-        public async Task<Guid> CreateNewsAsync(CreateNewsDto newNews)
+        public Task<NewsDto[]> GetNewsAsync(int skipNewsCount, int takeNewsCount)
         {
-            var addedNews = new News
-            {
-                Text = newNews.Text,
-                Headline = newNews.Headline,
-                SubTitle = newNews.SubTitle,
-                ImageData = newNews.ImageData,
-                ImageType = newNews.ImageType
-            };
-            await _dbContext.News.AddAsync(addedNews);
-            await _dbContext.SaveChangesAsync();
-            return addedNews.Id;
+            throw new NotImplementedException();
         }
 
-        public async Task<NewsDto[]> GetNewsAsync(int skipNewsCount, int takeNewsCount)
+        public Task<NewsDto> GetNewsByIdAsync(Guid id)
         {
-            var news = await _dbContext.News
-                .AsNoTracking()
-                .Skip(skipNewsCount)
-                .Take(takeNewsCount)
-                .Select(n => new NewsDto 
-                { 
-                    Text = n.Text,
-                    Headline = n.Headline,
-                    SubTitle = n.SubTitle,
-                    ImageData = Convert.ToBase64String(n.ImageData),
-                    ImageType = n.ImageType
-                })
-                .ToArrayAsync();
-            if (news is null)
-                return Array.Empty<NewsDto>();
-            return news;
-        }
-
-        public async Task<NewsDto?> GetNewsByIdAsync(Guid id)
-        {
-            var news = await _dbContext.News.FindAsync(id);
-            return news is null ? null : new NewsDto
-            {
-                Text = news.Text,
-                Headline = news.Headline,
-                SubTitle = news.SubTitle,
-                ImageData = Convert.ToBase64String(news.ImageData),
-                ImageType = news.ImageType
-            };
-        }
-
-        public async Task<int> GetNewsCountAsync()
-        {
-            return await _dbContext.News.CountAsync();
+            throw new NotImplementedException();
         }
     }
 }
