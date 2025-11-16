@@ -34,6 +34,16 @@ namespace PrasTestJobWeb
             builder.Services.AddScoped<INewsServices, NewsServices>();
             builder.Services.AddSingleton<IPasswordHashing, PBKDF2PasswordHashing>();
 
+            builder.Services.AddCors(options =>
+            {
+                options.AddPolicy("Default", policy =>
+                {
+                    policy.WithOrigins("http://localhost:4200", "https://localhost:4200")
+                          .AllowAnyMethod()
+                          .AllowAnyHeader();
+                });
+            });
+
             var app = builder.Build();
 
             if (app.Environment.IsDevelopment())
@@ -59,6 +69,8 @@ namespace PrasTestJobWeb
 
 
             app.UseRouting();
+
+            app.UseCors("Default");
 
             app.UseAuthentication();
             app.UseAuthorization();
