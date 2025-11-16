@@ -83,5 +83,51 @@ namespace PrasTestJobWeb.ApiControllers
                 throw;
             }
         }
+
+        [HttpDelete("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> DelNews(Guid id)
+        {
+            try
+            {
+                await _newsServices.DeleteNewsAsync(id);
+                return NoContent();
+            }
+            catch (Exception)
+            {
+                //return StatusCode(StatusCodes.Status500InternalServerError);
+                throw;
+            }
+        }
+
+        [HttpPut("{id}")]
+        [ProducesResponseType(StatusCodes.Status204NoContent)]
+        [ProducesResponseType(StatusCodes.Status500InternalServerError)]
+        public async Task<IActionResult> ChangeNews(Guid id, [FromForm] NewNewsRequest newNews)
+        {
+            try
+            {
+                using (var ms = new MemoryStream())
+                {
+                    await newNews.ImageFormFile.CopyToAsync(ms);
+                    var newNewsDto = new CreateNewsDto
+                    {
+                        Text = newNews.Text,
+                        SubTitle = newNews.SubTitle,
+                        Headline = newNews.Headline,
+                        ImageType = newNews.ImageFormFile.ContentType,
+                        ImageData = ms.ToArray()
+                    };
+                    await _newsServices.ChangeNewsAsync(id, newNewsDto);
+                    return NoContent();
+                };
+            }
+            catch (Exception)
+            {
+                //return StatusCode(StatusCodes.Status500InternalServerError);
+                throw;
+            }
+        }
     }
 }
