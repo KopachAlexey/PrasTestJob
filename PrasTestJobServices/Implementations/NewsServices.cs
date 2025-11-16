@@ -15,6 +15,17 @@ namespace PrasTestJobServices.Implementations
             _dbContext = dbContext;
         }
 
+        public async Task ChangeNewsAsync(Guid id, CreateNewsDto newNewsData)
+        {
+            var news = await _dbContext.News.FindAsync(id);
+            news.Text = newNewsData.Text;
+            news.Headline = newNewsData.Headline;
+            news.SubTitle = newNewsData.SubTitle;
+            news.ImageType = newNewsData.ImageType;
+            news.ImageData = newNewsData.ImageData;
+            await _dbContext.SaveChangesAsync();
+        }
+
         public async Task<Guid> CreateNewsAsync(CreateNewsDto newNews)
         {
             var addedNews = new News
@@ -28,6 +39,13 @@ namespace PrasTestJobServices.Implementations
             await _dbContext.News.AddAsync(addedNews);
             await _dbContext.SaveChangesAsync();
             return addedNews.Id;
+        }
+
+        public async Task DeleteNewsAsync(Guid id)
+        {
+            var news = await _dbContext.News.FindAsync(id);
+            _dbContext.News.Remove(news);
+            await _dbContext.SaveChangesAsync();
         }
 
         public async Task<NewsDto[]> GetNewsAsync(int skipNewsCount, int takeNewsCount)
